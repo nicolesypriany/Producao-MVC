@@ -4,7 +4,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<ProducaoAPI>();
+
+builder.Services.AddTransient<FormaAPI>();
+builder.Services.AddTransient<MaquinaAPI>();
+builder.Services.AddTransient<ProdutoAPI>();
+
 builder.Services.AddHttpClient("API", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["APIServer:Url"]!);

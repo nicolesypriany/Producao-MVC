@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Producao_MVC.Models;
-using Producao_MVC.Services;
 using System.Diagnostics;
 
 namespace Producao_MVC.Controllers
@@ -8,12 +7,10 @@ namespace Producao_MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ProducaoAPI _ducaoAPI;
 
-        public HomeController(ILogger<HomeController> logger, ProducaoAPI api)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _ducaoAPI = api;
         }
 
         public IActionResult Index()

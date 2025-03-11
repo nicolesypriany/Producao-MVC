@@ -19,4 +19,15 @@ html {
 
 body {
   margin-bottom: 60px;
+  font-family: 'Inter', sans-serif;
+}
+
+h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+}
+
+p {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
 }

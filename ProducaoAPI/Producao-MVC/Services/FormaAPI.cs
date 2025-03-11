@@ -3,11 +3,11 @@ using Producao_MVC.Responses;
 
 namespace Producao_MVC.Services
 {
-    public class ProducaoAPI
+    public class FormaAPI
     {
         private readonly HttpClient _httpClient;
 
-        public ProducaoAPI(IHttpClientFactory factory)
+        public FormaAPI(IHttpClientFactory factory)
         {
             _httpClient = factory.CreateClient("API");
         }
@@ -32,19 +32,9 @@ namespace Producao_MVC.Services
             await _httpClient.PutAsJsonAsync($"Forma/{id}", request);
         }
 
-        public async Task<IEnumerable<ProdutoResponse>> ListarProdutos()
+        public async Task InativarForma(int id)
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<ProdutoResponse>>("Produto");
-        }
-
-        public async Task<IEnumerable<MaquinaResponse>> ListarMaquinas()
-        {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<MaquinaResponse>>("Maquina");
-        }
-
-        public async Task<MaquinaResponse> BuscarMaquinaPorID(int id)
-        {
-            return await _httpClient.GetFromJsonAsync<MaquinaResponse>($"Maquina/{id}");
+            await _httpClient.DeleteAsync($"Forma/{id}");
         }
     }
 }
