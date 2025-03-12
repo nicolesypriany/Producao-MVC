@@ -7,4 +7,12 @@
     <RootNamespace>Producao_MVC</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\js\toggleMenu.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\toggleMenu.js" />
+  </ItemGroup>
+
 </Project>

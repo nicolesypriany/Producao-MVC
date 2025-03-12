@@ -1,25 +1,26 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
-  font-family: 'Inter', sans-serif;
+    margin-bottom: 60px;
+    margin-top: 60px;
+    font-family: 'Inter', sans-serif;
 }
 
 h1 {
@@ -30,4 +31,46 @@ h1 {
 p {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
+}
+
+.sidenav {
+    height: 100%; /* Altura total da página */
+    width: 250px; /* Largura do sidenav */
+    position: fixed; /* Fixa o sidenav na posição */
+    z-index: 1; /* Fica acima de outros elementos */
+    top: 0; /* Alinha ao topo */
+    left: 0; /* Alinha à esquerda */
+    background-color: #dfdfdf; /* Cor de fundo */
+    overflow-x: hidden; /* Desabilita o scroll horizontal */
+    padding-top: 20px; /* Espaçamento no topo */
+}
+
+    .sidenav a {
+        padding: 10px 15px; /* Espaçamento interno dos links */
+        text-decoration: none; /* Remove sublinhado */
+        font-size: 18px; /* Tamanho da fonte */
+        color: #818181; /* Cor do texto */
+        display: block; /* Exibe como bloco */
+        transition: 0.3s; /* Transição suave */
+    }
+
+        /* Estilos para os links ao passar o mouse */
+        .sidenav a:hover {
+            color: #aaaaaa; /* Cor do texto ao passar o mouse */
+        }
+
+/* Estilos para o conteúdo principal */
+#main {
+    margin-left: 250px; /* Espaço para o sidenav */
+    width: calc(100% - 250px); /* Ocupa o restante da largura da tela */
+    display: flex; /* Usa flexbox */
+    justify-content: center; /* Centraliza horizontalmente */
+    height: 100vh; /* Altura total da viewport */
+    padding: 20px; /* Espaçamento interno */
+    box-sizing: border-box; /* Inclui padding e border no tamanho total */
+}
+
+main {
+    width: 100%; /* Garantir que o conteúdo não ultrapasse a largura disponível */
+    max-width: 1200px; /* Limita a largura máxima do conteúdo */
 }
