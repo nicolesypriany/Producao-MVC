@@ -5,8 +5,10 @@
     "\\ProducaoAPI\\Producao-MVC",
     "\\ProducaoAPI\\Producao-MVC\\Views",
     "\\ProducaoAPI\\Producao-MVC\\Views\\Forma",
+    "\\ProducaoAPI\\Producao-MVC\\wwwroot",
+    "\\ProducaoAPI\\Producao-MVC\\wwwroot\\css",
     "\\ProducaoAPI\\ProducaoAPI"
   ],
-  "SelectedNode": "\\ProducaoAPI\\ProducaoAPI.sln",
+  "SelectedNode": "\\ProducaoAPI\\Producao-MVC\\wwwroot\\css\\site.css",
   "PreviewInSolutionExplorer": false
 }

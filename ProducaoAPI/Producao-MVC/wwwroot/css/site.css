@@ -1,3 +1,7 @@
+* {
+    font-family: 'Inter', sans-serif;
+}
+
 html {
     font-size: 14px;
 }
@@ -20,51 +24,49 @@ html {
 body {
     margin-bottom: 60px;
     margin-top: 60px;
-    font-family: 'Inter', sans-serif;
+    background-color: #f6f6f6;
 }
 
 h1 {
-    font-family: 'Inter', sans-serif;
     font-weight: 400;
 }
 
 p {
-    font-family: 'Inter', sans-serif;
     font-weight: 400;
 }
 
 .sidenav {
-    height: 100%; /* Altura total da página */
+    height: 100%;
     width: 250px; /* Largura do sidenav */
-    position: fixed; /* Fixa o sidenav na posição */
-    z-index: 1; /* Fica acima de outros elementos */
-    top: 0; /* Alinha ao topo */
-    left: 0; /* Alinha à esquerda */
-    background-color: #dfdfdf; /* Cor de fundo */
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: white;
     overflow-x: hidden; /* Desabilita o scroll horizontal */
-    padding-top: 20px; /* Espaçamento no topo */
+    padding-top: 20px;
 }
 
     .sidenav a {
         padding: 10px 15px; /* Espaçamento interno dos links */
         text-decoration: none; /* Remove sublinhado */
-        font-size: 18px; /* Tamanho da fonte */
-        color: #818181; /* Cor do texto */
+        font-size: 18px;
+        color: black;
         display: block; /* Exibe como bloco */
         transition: 0.3s; /* Transição suave */
     }
 
         /* Estilos para os links ao passar o mouse */
         .sidenav a:hover {
-            color: #aaaaaa; /* Cor do texto ao passar o mouse */
+            color: #aaaaaa;
         }
 
 /* Estilos para o conteúdo principal */
 #main {
-    margin-left: 250px; /* Espaço para o sidenav */
+    margin-left: 250px;
     width: calc(100% - 250px); /* Ocupa o restante da largura da tela */
     display: flex; /* Usa flexbox */
-    justify-content: center; /* Centraliza horizontalmente */
+    justify-content: center;
     height: 100vh; /* Altura total da viewport */
     padding: 20px; /* Espaçamento interno */
     box-sizing: border-box; /* Inclui padding e border no tamanho total */
@@ -74,3 +76,27 @@ main {
     width: 100%; /* Garantir que o conteúdo não ultrapasse a largura disponível */
     max-width: 1200px; /* Limita a largura máxima do conteúdo */
 }
+
+th, td {
+    border-bottom: 1px solid #ddd;
+}
+
+#th-td-criar-forma {
+    border-bottom: 0px;
+    padding: 2px;
+    border-radius: 10px;
+}
+
+.table-estilizada {
+    background-color: white;
+    border: 1px solid;
+    border-color: #ced4dA;
+    border-radius: 4px;
+    padding: 2px 2px;
+    border-collapse: separate; /* Evita que as bordas das células se juntem */
+}
+
+    .table-estilizada td, .table-estilizada th {
+        border-radius: 4px; /* Garantir que as bordas das células também fiquem arredondadas */
+    }
+
