@@ -8,6 +8,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<FormaAPI>();
 builder.Services.AddTransient<MaquinaAPI>();
 builder.Services.AddTransient<ProdutoAPI>();
+builder.Services.AddTransient<MateriaPrimaAPI>();
+builder.Services.AddTransient<ProcessoProducaoAPI>();
 
 builder.Services.AddHttpClient("API", client =>
 {

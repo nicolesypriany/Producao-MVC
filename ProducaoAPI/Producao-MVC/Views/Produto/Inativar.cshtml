@@ -1,0 +1,12 @@
+﻿@model Producao_MVC.Responses.ProdutoResponse
+
+@{
+    ViewData["Title"] = "Inativar Produto";
+}
+
+<div class="text">
+    <h3>Realmente deseja inativar o produto (@Model.Nome)?</h3>
+</div>
+<br />
+<a class="btn btn-primary btn-block" role="button" asp-controller="Produto" asp-action="Index">Cancelar exclusão</a>
+<a class="btn btn-danger btn-block" role="button" asp-controller="Produto" asp-action="InativarProduto" asp-route-id="@Model.Id">Confirmar exclusão</a>

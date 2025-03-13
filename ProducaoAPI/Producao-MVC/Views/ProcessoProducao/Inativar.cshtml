@@ -1,0 +1,12 @@
+﻿@model Producao_MVC.Responses.ProcessoProducaoResponse
+
+@{
+    ViewData["Title"] = "Inativar Produção";
+}
+
+<div class="text">
+    <h3>Realmente deseja inativar a produção ID (@Model.Id)? (Data @Model.Data.Date)</h3>
+</div>
+<br />
+<a class="btn btn-primary btn-block" role="button" asp-controller="ProcessoProducao" asp-action="Index">Cancelar exclusão</a>
+<a class="btn btn-danger btn-block" role="button" asp-controller="ProcessoProducao" asp-action="InativarProducao" asp-route-id="@Model.Id">Confirmar exclusão</a>

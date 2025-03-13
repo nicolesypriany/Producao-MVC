@@ -136,13 +136,13 @@ namespace Producao_MVC.Controllers
             }
         }
 
-        public async Task<IActionResult> InativarConfirmacao(int id)
+        public async Task<IActionResult> Inativar(int id)
         {
             var forma = await _formaApi.BuscarFormaPorID(id);
             return View(forma);
         }
 
-        public async Task<IActionResult> Inativar(int id)
+        public async Task<IActionResult> InativarForma(int id)
         {
             await _formaApi.InativarForma(id);
             TempData["MensagemSucesso"] = "Forma apagada com sucesso";

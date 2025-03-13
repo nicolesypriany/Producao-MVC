@@ -1,0 +1,12 @@
+﻿@model Producao_MVC.Responses.MateriaPrimaResponse
+
+@{
+    ViewData["Title"] = "Inativar Matéria-Prima";
+}
+
+<div class="text">
+    <h3>Realmente deseja inativar a matéria-prima (@Model.Nome)?</h3>
+</div>
+<br />
+<a class="btn btn-primary btn-block" role="button" asp-controller="MateriaPrima" asp-action="Index">Cancelar exclusão</a>
+<a class="btn btn-danger btn-block" role="button" asp-controller="MateriaPrima" asp-action="InativarMateriaPrima" asp-route-id="@Model.Id">Confirmar exclusão</a>
