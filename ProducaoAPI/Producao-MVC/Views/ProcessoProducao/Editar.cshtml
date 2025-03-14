@@ -11,7 +11,7 @@
 </div>
 
 <form asp-controller="ProcessoProducao" asp-action="EditarProducao" method="post">
-    <input type="hidden" asp-for="@Model.Producao.Id" />
+    <input type="hidden" asp-for="Producao.Id" />
     <div class="form-group">
         <label for="data">Data</label>
         <input type="date" asp-for="Data" class="form-control" placeholder="Digite a data da produção">

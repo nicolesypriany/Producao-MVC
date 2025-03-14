@@ -154,7 +154,7 @@ namespace Producao_MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditarProducao(int id, ProcessoProducaoViewModel producaoVM)
+        public async Task<IActionResult> EditarProducao(ProcessoProducaoViewModel producaoVM)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace Producao_MVC.Controllers
 
                 var request = new ProcessoProducaoRequest(producaoVM.Data, producaoVM.MaquinaId, producaoVM.FormaId, producaoVM.Ciclos, producaoMateriaPrimas);
 
-                await _processoProducaoAPI.AtualizarProcessoProducao(id, request);
+                await _processoProducaoAPI.AtualizarProcessoProducao(producaoVM.Producao.Id, request);
                 TempData["MensagemSucesso"] = "Produção alterada com sucesso";
                 return RedirectToAction("Index");
             }
