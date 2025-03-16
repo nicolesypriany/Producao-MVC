@@ -49,10 +49,10 @@
                         <td>@materiaPrima.Fornecedor</td>
                         <td>@materiaPrima.Unidade</td>
                         <td>R$ @materiaPrima.Preco</td>
-                        <td>
+                        <td class="column-action-buttons">
                             <div class="btn-group" role="group">
                                 <a role="button" class="btn btn-primary" asp-route-id="@materiaPrima.Id" asp-controller="MateriaPrima" asp-action="Editar">Editar</a>
-                                <a role="button" class="btn btn-danger" asp-route-id="@materiaPrima.Id" asp-controller="MateriaPrima" asp-action="Inativar">Apagar</a>
+                                <a role="button" class="btn btn-danger" asp-route-id="@materiaPrima.Id" asp-controller="MateriaPrima" asp-action="Inativar">Inativar</a>
                             </div>
                         </td>
                     </tr>

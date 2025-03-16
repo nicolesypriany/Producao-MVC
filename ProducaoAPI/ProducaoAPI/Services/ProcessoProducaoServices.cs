@@ -108,7 +108,7 @@ namespace ProducaoAPI.Services
 
             var producao = await BuscarProducaoPorIdAsync(id);
 
-            _producaoService.VerificarProducoesMateriasPrimasExistentes(id, request.MateriasPrimas);
+            _producaoMateriaPrimaService.VerificarProducoesMateriasPrimasExistentes(id, request.MateriasPrimas);
 
             producao.Data = request.Data;
             producao.MaquinaId = request.MaquinaId;
