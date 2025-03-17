@@ -106,7 +106,6 @@ namespace Producao_MVC.Controllers
             var formas = await _formaAPI.ListarFormas();
             var produtos = await _produtoAPI.ListarProdutos();
             var materiasPrimas = await _materiaPrimaAPI.ListarMateriasPrimas();
-            var producaoMaterias = producao.ProducaoMateriasPrimas.ToList();
 
             var materiasPrimasDaProducao = producao.ProducaoMateriasPrimas.ToList();
             var materiasCheckbox = new List<MateriaPrimaCheckboxViewModel>();
@@ -158,21 +157,15 @@ namespace Producao_MVC.Controllers
         {
             try
             {
-                List<MateriaPrimaResponse> materiasSelecionadas = new();
                 List<ProcessoProducaoMateriaPrimaRequest> producaoMateriaPrimas = new();
 
                 foreach (var item in producaoVM.MateriasPrimasCheckbox)
                 {
                     if (item.Selecionado)
                     {
-                        materiasSelecionadas.Add(await _materiaPrimaAPI.BuscarMateriaPrimaPorID(item.Id));
+                        producaoMateriaPrimas.Add(new ProcessoProducaoMateriaPrimaRequest(item.Id, item.Quantidade));
                     }
                 }
-
-                for (int i = 0; i < materiasSelecionadas.Count; i++)
-                {
-                    producaoMateriaPrimas.Add(new ProcessoProducaoMateriaPrimaRequest(materiasSelecionadas[i].Id, producaoVM.MateriasPrimasCheckbox[i].Quantidade));
-                };
 
                 var request = new ProcessoProducaoRequest(producaoVM.Data, producaoVM.MaquinaId, producaoVM.FormaId, producaoVM.Ciclos, producaoMateriaPrimas);
 
@@ -197,6 +190,13 @@ namespace Producao_MVC.Controllers
         {
             await _processoProducaoAPI.InativarProcessoProducao(id);
             TempData["MensagemSucesso"] = "Produção inativada com sucesso";
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> CalcularProducao(int id)
+        {
+            await _processoProducaoAPI.CalcularProducao(id);
+            TempData["MensagemSucesso"] = "Produção calculada com sucesso";
             return RedirectToAction("Index");
         }
     }

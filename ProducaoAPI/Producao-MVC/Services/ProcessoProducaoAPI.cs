@@ -36,5 +36,10 @@ namespace Producao_MVC.Services
         {
             await _httpClient.DeleteAsync($"ProcessoProducao/{id}");
         }
+
+        public async Task CalcularProducao(int id)
+        {
+            await _httpClient.PostAsync($"ProcessoProducao/CalcularProducao/{id}", null);
+        }
     }
 }

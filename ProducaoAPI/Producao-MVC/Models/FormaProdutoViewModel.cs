@@ -1,4 +1,5 @@
 ﻿using Producao_MVC.Responses;
+using System.ComponentModel.DataAnnotations;
 
 namespace Producao_MVC.Models
 {

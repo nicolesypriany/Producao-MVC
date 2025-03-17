@@ -62,19 +62,17 @@ p {
         }
 
 /* Estilos para o conteúdo principal */
-#main {
+main {
     margin-left: 250px;
-    width: calc(100% - 250px); /* Ocupa o restante da largura da tela */
-    display: flex; /* Usa flexbox */
+    max-width: 90%;
     justify-content: center;
     padding: 20px; /* Espaçamento interno */
     box-sizing: border-box; /* Inclui padding e border no tamanho total */
-    z-index: 1000;
 }
 
-main {
-    width: 100%; /* Garantir que o conteúdo não ultrapasse a largura disponível */
-    max-width: 1200px; /* Limita a largura máxima do conteúdo */
+.content {
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 th, td {

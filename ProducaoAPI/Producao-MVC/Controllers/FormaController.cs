@@ -3,6 +3,7 @@ using Producao_MVC.Models;
 using Producao_MVC.Requests;
 using Producao_MVC.Responses;
 using Producao_MVC.Services;
+using System.Reflection;
 
 namespace Producao_MVC.Controllers
 {
@@ -25,7 +26,7 @@ namespace Producao_MVC.Controllers
             return View(formas);
         }
 
-        public async Task<IActionResult> Criar(FormaRequest request)
+        public async Task<IActionResult> Criar()
         {
             var produtos = await _produtoAPI.ListarProdutos();
             var maquinas = await _maquinaApi.ListarMaquinas();
@@ -149,7 +150,7 @@ namespace Producao_MVC.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task CriarFormaPorModelo(FormaProdutoViewModel formaVm)
+        public async Task<FormaRequest> CriarFormaPorModelo(FormaProdutoViewModel formaVm)
         {
             List<MaquinaResponse> maquinasSelecionadas = new();
             foreach (var item in formaVm.MaquinasCheckbox)
@@ -167,7 +168,8 @@ namespace Producao_MVC.Controllers
             }
 
             var formaRequest = new FormaRequest(formaVm.Nome, formaVm.ProdutoId, formaVm.PecasPorCiclo, formaMaquinasRequest);
-            await _formaApi.CriarForma(formaRequest);
+            return formaRequest;
+            //await _formaApi.CriarForma(formaRequest);
         }
     }
 }
