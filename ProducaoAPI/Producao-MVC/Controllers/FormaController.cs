@@ -47,27 +47,60 @@ namespace Producao_MVC.Controllers
             {
                 Produtos = produtos,
                 Maquinas = maquinas.ToList(),
-                MaquinasCheckbox = maquinasCheckbox,
+                MaquinasCheckbox = maquinasCheckbox
             };
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Criar(FormaProdutoViewModel formaVm)
+        public async Task<IActionResult> Criar(FormaProdutoViewModel formaVm)
         {
+            var produtos = await _produtoAPI.ListarProdutos();
+            var maquinas = await _maquinaApi.ListarMaquinas();
+            var maquinasCheckbox = new List<MaquinaCheckboxViewModel>();
+
+            foreach (var maquina in maquinas)
+            {
+                var maquinaCheck = new MaquinaCheckboxViewModel
+                {
+                    Id = maquina.Id,
+                    Nome = maquina.Nome,
+                    Selecionado = false
+                };
+                maquinasCheckbox.Add(maquinaCheck);
+            }
+
+            var viewModel = new FormaProdutoViewModel
+            {
+                Produtos = produtos,
+                Maquinas = maquinas.ToList(),
+                MaquinasCheckbox = maquinasCheckbox,
+            };
+
             try
             {
-                var forma = CriarFormaPorModelo(formaVm);
+                var formas = await _formaApi.ListarFormas();
+                List<string> nomes = formas.ToList().Select(f => f.Nome).ToList();
+                if(nomes.Contains(formaVm.Nome))
+                {
+                    TempData["MensagemErro"] = "Já existe uma forma com este nome!";
+                    return View(viewModel);
+                }
+
+                var forma = await CriarFormaPorModelo(formaVm);
+                await _formaApi.CriarForma(forma);
+
                 TempData["MensagemSucesso"] = "Forma cadastrada com sucesso";
                 return RedirectToAction("Index");
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua forma, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("Index");
+                TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua forma, tente novamente. Erro: {erro.Message}";
+                return View(viewModel);
             }
         }
+
 
         public async Task<IActionResult> Editar(int id)
         {

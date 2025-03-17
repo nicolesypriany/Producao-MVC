@@ -8,6 +8,12 @@
 
     <h1 class="display-4">Cadastrar Forma</h1>
 
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["MensagemErro"]
+        </div>
+    }
 </div>
 
 <form asp-controller="Forma" asp-action="Criar" method="post">

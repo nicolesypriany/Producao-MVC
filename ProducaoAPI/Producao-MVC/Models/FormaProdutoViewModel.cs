@@ -16,5 +16,6 @@ namespace Producao_MVC.Models
         public IEnumerable<ProdutoResponse> Produtos { get; set; }
         public List<MaquinaResponse> Maquinas { get; set; }
         public List<MaquinaCheckboxViewModel> MaquinasCheckbox { get; set; }
+        public List<string> Nomes { get; set; }
     }
 }
