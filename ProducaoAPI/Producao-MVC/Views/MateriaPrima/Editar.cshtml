@@ -15,25 +15,25 @@
     <div class="form-group">
         <label for="nome">Nome</label>
         <input type="text" asp-for="Nome" class="form-control" placeholder="Digite o nome da matéria-prima">
-        @Html.ValidationMessageFor(x => x.Nome)
+        <span asp-validation-for="Nome" class="text-danger"></span>
     </div>
     <br />
     <div class="form-group">
         <label for="medidas">Fornecedor</label>
         <input type="text" asp-for="Fornecedor" class="form-control" placeholder="Digite o fornecedor da matéria-prima">
-        @Html.ValidationMessageFor(x => x.Fornecedor)
+        <span asp-validation-for="Fornecedor" class="text-danger"></span>
     </div>
     <br />
     <div class="form-group">
         <label for="unidade">Unidade</label>
         <input type="text" asp-for="Unidade" class="form-control" placeholder="Digite a unidade da matéria-prima">
-        @Html.ValidationMessageFor(x => x.Unidade)
+        <span asp-validation-for="Unidade" class="text-danger"></span>
     </div>
     <br />
     <div class="form-group">
         <label for="pecasPorUnidade">Preço</label>
         <input type="number" asp-for="Preco" class="form-control" placeholder="Digite o preço da matéria-prima">
-        @Html.ValidationMessageFor(x => x.Preco)
+        <span asp-validation-for="Preco" class="text-danger"></span>
     </div>
     <br />
     <button type="submit" class="btn btn-primary btn-block">Editar</button>

@@ -15,7 +15,7 @@
     <div class="form-group">
         <label for="data">Data</label>
         <input type="date" asp-for="Data" class="form-control" placeholder="Digite a data da produção">
-        @Html.ValidationMessageFor(x => x.Data)
+        <span asp-validation-for="Data" class="text-danger"></span>
     </div>
     <br />
     <div>
@@ -27,6 +27,7 @@
                 <option value="@maquina.Id">@maquina.Nome</option>
             }
         </select>
+        <span asp-validation-for="MaquinaId" class="text-danger"></span>
     </div>
     <br />
     <div>
@@ -38,12 +39,13 @@
                 <option value="@forma.Id">@forma.Nome - (@forma.Produto.Nome)</option>
             }
         </select>
+        <span asp-validation-for="FormaId" class="text-danger"></span>
     </div>
     <br />
     <div class="form-group">
         <label for="ciclos">Ciclos</label>
         <input type="number" asp-for="Ciclos" class="form-control" placeholder="Digite o número de ciclos">
-        @Html.ValidationMessageFor(x => x.Ciclos)
+        <span asp-validation-for="Ciclos" class="text-danger"></span>
     </div>
     <br />
     <div>

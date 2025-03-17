@@ -1,4 +1,6 @@
-﻿namespace Producao_MVC.Requests;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record MaquinaRequest(string Nome, string Marca);
+namespace Producao_MVC.Requests;
+
+public record MaquinaRequest([Required(ErrorMessage = "O nome é obrigatório.")] string Nome, [Required(ErrorMessage = "A marca é obrigatória.")] string Marca);
 
