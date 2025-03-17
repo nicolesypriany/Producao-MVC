@@ -15,8 +15,9 @@
     <div class="form-group">
         <label for="nome">Nome</label>
         <input type="text" asp-for="Nome" class="form-control" placeholder="Digite o nome da forma">
-        @Html.ValidationMessageFor(x => x.Nome)
+        <span asp-validation-for="Nome" class="text-danger"></span>
     </div>
+    <br />
     <div>
         <label for="Produto">Produto</label>
         <select asp-for="ProdutoId" class="form-control">
@@ -26,6 +27,7 @@
                 <option value="@produto.Id">@produto.Nome</option>
             }
         </select>
+        <span asp-validation-for="ProdutoId" class="text-danger"></span>
     </div>
     <br />
     <div>
@@ -44,12 +46,13 @@
                 }
             </tbody>
         </table>
-     <br />
+        <span asp-validation-for="MaquinasCheckbox" class="text-danger"></span>
     </div>
+    <br />
     <div class="form-group">
         <label for="pecasPorCiclo">Peças por Ciclo</label>
         <input type="number" asp-for="PecasPorCiclo" class="form-control" placeholder="Digite o número de peças por ciclo da forma">
-        @Html.ValidationMessageFor(x => x.PecasPorCiclo)
+        <span asp-validation-for="PecasPorCiclo" class="text-danger"></span>
     </div>
     <br />
 
