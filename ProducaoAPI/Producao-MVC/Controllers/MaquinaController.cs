@@ -28,14 +28,22 @@ namespace Producao_MVC.Controllers
         {
             try
             {
+                var maquinas = await _maquinaApi.ListarMaquinas();
+                List<string> nomes = maquinas.ToList().Select(m => m.Nome).ToList();
+                if(nomes.Contains(request.Nome))
+                {
+                    TempData["MensagemErro"] = "Já existe uma máquina com este nome!";
+                    return View();
+                }
+
                 await _maquinaApi.CriarMaquina(request);
                 TempData["MensagemSucesso"] = "Máquina cadastrada com sucesso";
                 return RedirectToAction("Index");
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua máquina, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("Index");
+                TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua máquina. Erro:  {erro.Message}";
+                return View();
             }
         }
 

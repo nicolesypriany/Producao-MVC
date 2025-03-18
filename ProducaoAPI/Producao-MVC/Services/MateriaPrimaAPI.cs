@@ -14,27 +14,50 @@ namespace Producao_MVC.Services
 
         public async Task<IEnumerable<MateriaPrimaResponse>> ListarMateriasPrimas()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<MateriaPrimaResponse>>("MateriaPrima");
+            var responseMessage = await _httpClient.GetAsync("MateriaPrima");
+            
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return await _httpClient.GetFromJsonAsync<IEnumerable<MateriaPrimaResponse>>("MateriaPrima");
+            }
+            else
+            {
+                await ValidateResponse.Validate(responseMessage);
+                return null;
+            }
         }
 
         public async Task<MateriaPrimaResponse> BuscarMateriaPrimaPorID(int id)
         {
-            return await _httpClient.GetFromJsonAsync<MateriaPrimaResponse>($"MateriaPrima/{id}");
+            var responseMessage = await _httpClient.GetAsync($"MateriaPrima/{id}");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return await _httpClient.GetFromJsonAsync<MateriaPrimaResponse>($"MateriaPrima/{id}");
+            }
+            else
+            {
+                await ValidateResponse.Validate(responseMessage);
+                return null;
+            }
         }
 
         public async Task CriarMateriaPrima(MateriaPrimaRequest request)
         {
-            await _httpClient.PostAsJsonAsync("MateriaPrima", request);
+            var response = await _httpClient.PostAsJsonAsync("MateriaPrima", request);
+            await ValidateResponse.Validate(response);
         }
 
         public async Task AtualizarMateriaPrima(int id, MateriaPrimaRequest request)
         {
-            await _httpClient.PutAsJsonAsync($"MateriaPrima/{id}", request);
+            var response = await _httpClient.PutAsJsonAsync($"MateriaPrima/{id}", request);
+            await ValidateResponse.Validate(response);
         }
 
         public async Task InativarMateriaPrima(int id)
         {
-            await _httpClient.DeleteAsync($"MateriaPrima/{id}");
+            var response = await _httpClient.DeleteAsync($"MateriaPrima/{id}");
+            await ValidateResponse.Validate(response);
         }
     }
 }

@@ -14,27 +14,49 @@ namespace Producao_MVC.Services
 
         public async Task<IEnumerable<MaquinaResponse>> ListarMaquinas()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<MaquinaResponse>>("Maquina");
+            var responseMessage = await _httpClient.GetAsync("Maquina");
+            if(responseMessage.IsSuccessStatusCode)
+            {
+                return await _httpClient.GetFromJsonAsync<IEnumerable<MaquinaResponse>>("Maquina");
+            }
+            else
+            {
+                await ValidateResponse.Validate(responseMessage);
+                return null;
+            }
         }
 
         public async Task<MaquinaResponse> BuscarMaquinaPorID(int id)
         {
-            return await _httpClient.GetFromJsonAsync<MaquinaResponse>($"Maquina/{id}");
+            var responseMessage = await _httpClient.GetAsync($"Maquina/{id}");
+            
+            if(responseMessage.IsSuccessStatusCode)
+            {
+                return await _httpClient.GetFromJsonAsync<MaquinaResponse>($"Maquina/{id}");
+            }
+            else
+            {
+                await ValidateResponse.Validate(responseMessage);
+                return null;
+            }
         }
 
         public async Task CriarMaquina(MaquinaRequest request)
         {
-            await _httpClient.PostAsJsonAsync("Maquina", request);
+            var response = await _httpClient.PostAsJsonAsync("Maquina", request);
+            await ValidateResponse.Validate(response);
         }
 
         public async Task AtualizarMaquina(int id, MaquinaRequest request)
         {
-            await _httpClient.PutAsJsonAsync($"Maquina/{id}", request);
+            var response = await _httpClient.PutAsJsonAsync($"Maquina/{id}", request);
+            await ValidateResponse.Validate(response);
         }
 
         public async Task InativarMaquina(int id)
         {
-            await _httpClient.DeleteAsync($"Maquina/{id}");
+            var response = await _httpClient.DeleteAsync($"Maquina/{id}");
+            await ValidateResponse.Validate(response);
         }
     }
 }

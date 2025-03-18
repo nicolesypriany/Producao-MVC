@@ -14,27 +14,50 @@ namespace Producao_MVC.Services
 
         public async Task<IEnumerable<ProdutoResponse>> ListarProdutos()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<ProdutoResponse>>("Produto");
+            var responseMessage = await _httpClient.GetAsync("Produto");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return await _httpClient.GetFromJsonAsync<IEnumerable<ProdutoResponse>>("Produto");
+            }
+            else
+            {
+                await ValidateResponse.Validate(responseMessage);
+                return null;
+            }
         }
 
         public async Task<ProdutoResponse> BuscarProdutoPorID(int id)
         {
-            return await _httpClient.GetFromJsonAsync<ProdutoResponse>($"Produto/{id}");
+            var responseMessage = await _httpClient.GetAsync($"Produto/{id}");
+
+            if(responseMessage.IsSuccessStatusCode)
+            {
+                return await _httpClient.GetFromJsonAsync<ProdutoResponse>($"Produto/{id}");
+            }
+            else
+            {
+                await ValidateResponse.Validate(responseMessage);
+                return null;
+            }
         }
 
         public async Task CriarProduto(ProdutoRequest request)
         {
-            await _httpClient.PostAsJsonAsync("Produto", request);
+            var response = await _httpClient.PostAsJsonAsync("Produto", request);
+            await ValidateResponse.Validate(response);
         }
 
         public async Task AtualizarProduto(int id, ProdutoRequest request)
         {
-            await _httpClient.PutAsJsonAsync($"Produto/{id}", request);
+            var response = await _httpClient.PutAsJsonAsync($"Produto/{id}", request);
+            await ValidateResponse.Validate(response);
         }
 
         public async Task InativarProduto(int id)
         {
-            await _httpClient.DeleteAsync($"Produto/{id}");
+            var response = await _httpClient.DeleteAsync($"Produto/{id}");
+            await ValidateResponse.Validate(response);
         }
     }
 }

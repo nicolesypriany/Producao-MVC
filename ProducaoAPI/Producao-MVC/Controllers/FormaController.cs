@@ -3,7 +3,6 @@ using Producao_MVC.Models;
 using Producao_MVC.Requests;
 using Producao_MVC.Responses;
 using Producao_MVC.Services;
-using System.Reflection;
 
 namespace Producao_MVC.Controllers
 {
@@ -28,67 +27,17 @@ namespace Producao_MVC.Controllers
 
         public async Task<IActionResult> Criar()
         {
-            var produtos = await _produtoAPI.ListarProdutos();
-            var maquinas = await _maquinaApi.ListarMaquinas();
-            var maquinasCheckbox = new List<MaquinaCheckboxViewModel>();
-
-            foreach (var maquina in maquinas)
-            {
-                var maquinaCheck = new MaquinaCheckboxViewModel
-                {
-                    Id = maquina.Id,
-                    Nome = maquina.Nome,
-                    Selecionado = false
-                };
-                maquinasCheckbox.Add(maquinaCheck);
-            }
-
-            var viewModel = new FormaProdutoViewModel
-            {
-                Produtos = produtos,
-                Maquinas = maquinas.ToList(),
-                MaquinasCheckbox = maquinasCheckbox
-            };
-
-            return View(viewModel);
+            return View(await RetornarViewModel(false));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Criar(FormaProdutoViewModel formaVm)
+        public async Task<IActionResult> Criar(FormaProdutoViewModel formaViewModel)
         {
-            var produtos = await _produtoAPI.ListarProdutos();
-            var maquinas = await _maquinaApi.ListarMaquinas();
-            var maquinasCheckbox = new List<MaquinaCheckboxViewModel>();
-
-            foreach (var maquina in maquinas)
-            {
-                var maquinaCheck = new MaquinaCheckboxViewModel
-                {
-                    Id = maquina.Id,
-                    Nome = maquina.Nome,
-                    Selecionado = false
-                };
-                maquinasCheckbox.Add(maquinaCheck);
-            }
-
-            var viewModel = new FormaProdutoViewModel
-            {
-                Produtos = produtos,
-                Maquinas = maquinas.ToList(),
-                MaquinasCheckbox = maquinasCheckbox,
-            };
-
             try
             {
-                var formas = await _formaApi.ListarFormas();
-                List<string> nomes = formas.ToList().Select(f => f.Nome).ToList();
-                if(nomes.Contains(formaVm.Nome))
-                {
-                    TempData["MensagemErro"] = "Já existe uma forma com este nome!";
-                    return View(viewModel);
-                }
+                await VerificarNomeDuplicado(true, formaViewModel.Nome);
 
-                var forma = await CriarFormaPorModelo(formaVm);
+                var forma = await CriarFormaPorModelo(formaViewModel);
                 await _formaApi.CriarForma(forma);
 
                 TempData["MensagemSucesso"] = "Forma cadastrada com sucesso";
@@ -96,18 +45,91 @@ namespace Producao_MVC.Controllers
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua forma, tente novamente. Erro: {erro.Message}";
-                return View(viewModel);
+                TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua forma. Erro: {erro.Message}";
+                return View(await RetornarViewModel(false));
             }
         }
 
-
         public async Task<IActionResult> Editar(int id)
+        {
+            return View(await RetornarViewModel(true, id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Editar(FormaProdutoViewModel formaViewModel)
+        {
+            try
+            {
+                await VerificarNomeDuplicado(false, formaViewModel.Nome, formaViewModel.Forma.Id);
+
+                List<FormaMaquinaRequest> maquinasSelecionadas = [];
+                foreach (var item in formaViewModel.MaquinasCheckbox)
+                {
+                    if (item.Selecionado)
+                    {
+                        maquinasSelecionadas.Add(new FormaMaquinaRequest(item.Id));
+                    }
+                }
+
+                var request = new FormaRequest(formaViewModel.Nome, formaViewModel.ProdutoId, formaViewModel.PecasPorCiclo, maquinasSelecionadas);
+                await _formaApi.AtualizarForma(formaViewModel.Forma.Id, request);
+
+                TempData["MensagemSucesso"] = "Forma alterada com sucesso";
+                return RedirectToAction("Index");
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Não conseguimos atualizar a forma. Erro: {erro.Message}";
+                return View(await RetornarViewModel(true, formaViewModel.Forma.Id));
+            }
+        }
+
+        public async Task<IActionResult> Inativar(int id)
+        {
+            try
+            {
+                var forma = await _formaApi.BuscarFormaPorID(id);
+                return View(forma);
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Não conseguimos atualizar a forma. Erro: {erro.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
+        public async Task<IActionResult> InativarForma(int id)
+        {
+            await _formaApi.InativarForma(id);
+            TempData["MensagemSucesso"] = "Forma inativada com sucesso";
+            return RedirectToAction("Index");
+        }
+
+        private async Task<FormaRequest> CriarFormaPorModelo(FormaProdutoViewModel formaViewModel)
+        {
+            List<MaquinaResponse> maquinasSelecionadas = [];
+            foreach (var item in formaViewModel.MaquinasCheckbox)
+            {
+                if (item.Selecionado)
+                {
+                    maquinasSelecionadas.Add(await _maquinaApi.BuscarMaquinaPorID(item.Id));
+                }
+            }
+
+            List<FormaMaquinaRequest> formaMaquinasRequest = [];
+            foreach (var item in maquinasSelecionadas)
+            {
+                formaMaquinasRequest.Add(new FormaMaquinaRequest(item.Id));
+            }
+
+            var formaRequest = new FormaRequest(formaViewModel.Nome, formaViewModel.ProdutoId, formaViewModel.PecasPorCiclo, formaMaquinasRequest);
+            return formaRequest;
+        }
+
+        private async Task<FormaProdutoViewModel> RetornarViewModel(bool Editar, int id = 0)
         {
             var produtos = await _produtoAPI.ListarProdutos();
             var maquinas = await _maquinaApi.ListarMaquinas();
-            var forma = await _formaApi.BuscarFormaPorID(id);
-            var maquinasDaForma = forma.Maquinas.ToList();
 
             var maquinasCheckbox = new List<MaquinaCheckboxViewModel>();
             foreach (var maquina in maquinas)
@@ -120,89 +142,62 @@ namespace Producao_MVC.Controllers
                 });
             }
 
-            for (int i = 0; i < maquinasCheckbox.Count; i++)
+            if (Editar)
             {
-                var maquina = await _maquinaApi.BuscarMaquinaPorID(maquinasCheckbox[i].Id);
-                if (maquinasDaForma.Contains(maquina))
+                var forma = await _formaApi.BuscarFormaPorID(id);
+                var maquinasDaForma = forma.Maquinas.ToList();
+
+                for (int i = 0; i < maquinasCheckbox.Count; i++)
                 {
-                    maquinasCheckbox[i].Selecionado = true;
-                }
-            }
-
-            var viewModel = new FormaProdutoViewModel
-            {
-                Forma = forma,
-                Nome = forma.Nome,
-                ProdutoId = forma.Produto.Id,
-                PecasPorCiclo = forma.PecasPorCiclo,
-                Maquinas = maquinas.ToList(),
-                MaquinasCheckbox = maquinasCheckbox,
-                Produtos = produtos
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Editar(FormaProdutoViewModel formaVm)
-        {
-            try
-            {
-                List<FormaMaquinaRequest> maquinasSelecionadas = new();
-                foreach (var item in formaVm.MaquinasCheckbox)
-                {
-                    if (item.Selecionado)
+                    var maquina = await _maquinaApi.BuscarMaquinaPorID(maquinasCheckbox[i].Id);
+                    if (maquinasDaForma.Contains(maquina))
                     {
-                        maquinasSelecionadas.Add(new FormaMaquinaRequest(item.Id));
+                        maquinasCheckbox[i].Selecionado = true;
                     }
                 }
 
-                var request = new FormaRequest(formaVm.Nome, formaVm.ProdutoId, formaVm.PecasPorCiclo, maquinasSelecionadas);
-                await _formaApi.AtualizarForma(formaVm.Forma.Id, request);
-
-                TempData["MensagemSucesso"] = "Forma alterada com sucesso";
-                return RedirectToAction("Index");
-            }
-            catch (Exception erro)
-            {
-                TempData["MensagemErro"] = $"Não conseguimos atualizar a forma, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("Index");
-            }
-        }
-
-        public async Task<IActionResult> Inativar(int id)
-        {
-            var forma = await _formaApi.BuscarFormaPorID(id);
-            return View(forma);
-        }
-
-        public async Task<IActionResult> InativarForma(int id)
-        {
-            await _formaApi.InativarForma(id);
-            TempData["MensagemSucesso"] = "Forma apagada com sucesso";
-            return RedirectToAction("Index");
-        }
-
-        public async Task<FormaRequest> CriarFormaPorModelo(FormaProdutoViewModel formaVm)
-        {
-            List<MaquinaResponse> maquinasSelecionadas = new();
-            foreach (var item in formaVm.MaquinasCheckbox)
-            {
-                if (item.Selecionado)
+                return new FormaProdutoViewModel
                 {
-                    maquinasSelecionadas.Add(await _maquinaApi.BuscarMaquinaPorID(item.Id));
+                    Forma = forma,
+                    Nome = forma.Nome,
+                    ProdutoId = forma.Produto.Id,
+                    PecasPorCiclo = forma.PecasPorCiclo,
+                    Maquinas = maquinas.ToList(),
+                    MaquinasCheckbox = maquinasCheckbox,
+                    Produtos = produtos
+                };
+            }
+            else
+            {
+                return new FormaProdutoViewModel
+                {
+                    Produtos = produtos,
+                    Maquinas = maquinas.ToList(),
+                    MaquinasCheckbox = maquinasCheckbox,
+                };
+            }
+        }
+
+        private async Task VerificarNomeDuplicado(bool cadastrar, string nome, int id = 0)
+        {
+            var formas = await _formaApi.ListarFormas();
+            List<string> nomes = formas.ToList().Select(f => f.Nome).ToList();
+            
+            if(cadastrar)
+            {
+                if (nomes.Contains(nome))
+                {
+                    TempData["MensagemErro"] = "Já existe uma forma com este nome!";
+                }
+            } 
+            else
+            {
+                var forma = await _formaApi.BuscarFormaPorID(id);
+                if (nomes.Contains(nome) && forma.Nome != nome)
+                {
+                    TempData["MensagemErro"] = "Já existe uma forma com este nome!";
                 }
             }
-
-            List<FormaMaquinaRequest> formaMaquinasRequest = new();
-            foreach (var item in maquinasSelecionadas)
-            {
-                formaMaquinasRequest.Add(new FormaMaquinaRequest(item.Id));
-            }
-
-            var formaRequest = new FormaRequest(formaVm.Nome, formaVm.ProdutoId, formaVm.PecasPorCiclo, formaMaquinasRequest);
-            return formaRequest;
-            //await _formaApi.CriarForma(formaRequest);
         }
     }
 }
