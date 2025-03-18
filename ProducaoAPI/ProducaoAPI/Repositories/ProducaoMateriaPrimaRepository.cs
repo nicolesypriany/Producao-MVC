@@ -1,4 +1,5 @@
-﻿using ProducaoAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ProducaoAPI.Data;
 using ProducaoAPI.Models;
 using ProducaoAPI.Repositories.Interfaces;
 
@@ -6,15 +7,20 @@ namespace ProducaoAPI.Repositories
 {
     public class ProducaoMateriaPrimaRepository : IProducaoMateriaPrimaRepository
     {
-        private readonly ProducaoContext _context;
-        public ProducaoMateriaPrimaRepository(ProducaoContext context)
+        private readonly IDbContextFactory<ProducaoContext> _contextFactory;
+        public ProducaoMateriaPrimaRepository(IDbContextFactory<ProducaoContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
         public async Task AdicionarAsync(ProcessoProducaoMateriaPrima producaoMateriaPrima)
         {
-            await _context.ProducoesMateriasPrimas.AddAsync(producaoMateriaPrima);
-            await _context.SaveChangesAsync();
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                await context.ProducoesMateriasPrimas.AddAsync(producaoMateriaPrima);
+                await context.SaveChangesAsync();
+            }
+
+                
         }
     }
 }

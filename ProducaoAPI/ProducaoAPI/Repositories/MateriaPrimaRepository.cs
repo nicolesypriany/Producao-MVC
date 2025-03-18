@@ -8,57 +8,81 @@ namespace ProducaoAPI.Repositories
 {
     public class MateriaPrimaRepository : IMateriaPrimaRepository
     {
-        private readonly ProducaoContext _context;
-        public MateriaPrimaRepository(ProducaoContext context)
+        private readonly IDbContextFactory<ProducaoContext> _contextFactory;
+        public MateriaPrimaRepository(IDbContextFactory<ProducaoContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public async Task<IEnumerable<MateriaPrima>> ListarMateriasPrimasAtivas()
         {
-            var materiasPrimas = await _context.MateriasPrimas
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var materiasPrimas = await context.MateriasPrimas
                 .Where(m => m.Ativo == true)
                 .ToListAsync();
 
-            if (materiasPrimas == null || materiasPrimas.Count == 0) throw new NotFoundException("Nenhuma matéria-prima ativa encontrada.");
-            return materiasPrimas;
+                if (materiasPrimas == null || materiasPrimas.Count == 0) throw new NotFoundException("Nenhuma matéria-prima ativa encontrada.");
+                return materiasPrimas;
+            }
+                
         }
 
         public async Task<IEnumerable<MateriaPrima>> ListarTodasMateriasPrimas()
         {
-            var materiasPrimas = await _context.MateriasPrimas
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var materiasPrimas = await context.MateriasPrimas
                 .ToListAsync();
 
-            if (materiasPrimas == null || materiasPrimas.Count == 0) throw new NotFoundException("Nenhuma matéria-prima ativa encontrada.");
-            return materiasPrimas;
+                if (materiasPrimas == null || materiasPrimas.Count == 0) throw new NotFoundException("Nenhuma matéria-prima ativa encontrada.");
+                return materiasPrimas;
+            }
+                
         }
 
         public async Task<MateriaPrima> BuscarMateriaPrimaPorIdAsync(int id)
         {
-            var materiaPrima = await _context.MateriasPrimas
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var materiaPrima = await context.MateriasPrimas
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (materiaPrima == null) throw new NotFoundException("ID da matéria-prima não encontrado.");
-            return materiaPrima;
+                if (materiaPrima == null) throw new NotFoundException("ID da matéria-prima não encontrado.");
+                return materiaPrima;
+            }
+                
         }
 
         public async Task AdicionarAsync(MateriaPrima materiaPrima)
         {
-            await _context.MateriasPrimas.AddAsync(materiaPrima);
-            await _context.SaveChangesAsync();
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                await context.MateriasPrimas.AddAsync(materiaPrima);
+                await context.SaveChangesAsync();
+            }
+                
         }
 
         public async Task AtualizarAsync(MateriaPrima materiaPrima)
         {
-            _context.MateriasPrimas.Update(materiaPrima);
-            await _context.SaveChangesAsync();
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                context.MateriasPrimas.Update(materiaPrima);
+                await context.SaveChangesAsync();
+            }
+                
         }
 
         public async Task<IEnumerable<string>> ListarNomes()
         {
-            return await _context.MateriasPrimas
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.MateriasPrimas
                 .Select(m => m.Nome)
                 .ToListAsync();
+            }
+                
         }
     }
 }

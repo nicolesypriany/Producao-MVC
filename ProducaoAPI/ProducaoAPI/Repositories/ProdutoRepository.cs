@@ -8,57 +8,83 @@ namespace ProducaoAPI.Repositories
 {
     public class ProdutoRepository : IProdutoRepository
     {
-        private readonly ProducaoContext _context;
-        public ProdutoRepository(ProducaoContext context)
+        private readonly IDbContextFactory<ProducaoContext> _contextFactory;
+        public ProdutoRepository(IDbContextFactory<ProducaoContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public async Task<IEnumerable<Produto>> ListarProdutosAtivos()
         {
-            var produtos = await _context.Produtos
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var produtos = await context.Produtos
                 .Where(m => m.Ativo == true)
                 .ToListAsync();
 
-            if (produtos == null || produtos.Count == 0) throw new NotFoundException("Nenhum produto ativo.");
-            return produtos;
+                if (produtos == null || produtos.Count == 0) throw new NotFoundException("Nenhum produto ativo.");
+                return produtos;
+            }
+
+                
         }
 
         public async Task<IEnumerable<Produto>> ListarTodosProdutos()
         {
-            var produtos = await _context.Produtos
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var produtos = await context.Produtos
                 .ToListAsync();
 
-            if (produtos == null || produtos.Count == 0) throw new NotFoundException("Nenhum produto encontrado.");
-            return produtos;
+                if (produtos == null || produtos.Count == 0) throw new NotFoundException("Nenhum produto encontrado.");
+                return produtos;
+            }
+
+                
         }
 
         public async Task<Produto> BuscarProdutoPorIdAsync(int id)
         {
-            var produto = await _context.Produtos
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var produto = await context.Produtos
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (produto == null) throw new NotFoundException("ID do produto não encontrado.");
-            return produto;
+                if (produto == null) throw new NotFoundException("ID do produto não encontrado.");
+                return produto;
+            }
+                
         }
 
         public async Task AdicionarAsync(Produto produto)
         {
-            await _context.Produtos.AddAsync(produto);
-            await _context.SaveChangesAsync();
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                await context.Produtos.AddAsync(produto);
+                await context.SaveChangesAsync();
+            }
+                
         }
 
         public async Task AtualizarAsync(Produto produto)
         {
-            _context.Produtos.Update(produto);
-            await _context.SaveChangesAsync();
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                context.Produtos.Update(produto);
+                await context.SaveChangesAsync();
+            }
+                
         }
 
         public async Task<IEnumerable<string>> ListarNomes()
         {
-            return await _context.Produtos
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.Produtos
                 .Select(p => p.Nome)
                 .ToListAsync();
+            }
+                
         }
     }
 }
