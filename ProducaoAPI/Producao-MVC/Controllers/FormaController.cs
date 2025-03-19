@@ -35,11 +35,8 @@ namespace Producao_MVC.Controllers
         {
             try
             {
-                await VerificarNomeDuplicado(true, formaViewModel.Nome);
-
                 var forma = await CriarFormaPorModelo(formaViewModel);
                 await _formaApi.CriarForma(forma);
-
                 TempData["MensagemSucesso"] = "Forma cadastrada com sucesso";
                 return RedirectToAction("Index");
             }
@@ -60,8 +57,6 @@ namespace Producao_MVC.Controllers
         {
             try
             {
-                await VerificarNomeDuplicado(false, formaViewModel.Nome, formaViewModel.Forma.Id);
-
                 List<FormaMaquinaRequest> maquinasSelecionadas = [];
                 foreach (var item in formaViewModel.MaquinasCheckbox)
                 {
@@ -175,28 +170,6 @@ namespace Producao_MVC.Controllers
                     Maquinas = maquinas.ToList(),
                     MaquinasCheckbox = maquinasCheckbox,
                 };
-            }
-        }
-
-        private async Task VerificarNomeDuplicado(bool cadastrar, string nome, int id = 0)
-        {
-            var formas = await _formaApi.ListarFormas();
-            List<string> nomes = formas.ToList().Select(f => f.Nome).ToList();
-            
-            if(cadastrar)
-            {
-                if (nomes.Contains(nome))
-                {
-                    TempData["MensagemErro"] = "Já existe uma forma com este nome!";
-                }
-            } 
-            else
-            {
-                var forma = await _formaApi.BuscarFormaPorID(id);
-                if (nomes.Contains(nome) && forma.Nome != nome)
-                {
-                    TempData["MensagemErro"] = "Já existe uma forma com este nome!";
-                }
             }
         }
     }

@@ -28,14 +28,6 @@ namespace Producao_MVC.Controllers
         {
             try
             {
-                var maquinas = await _maquinaApi.ListarMaquinas();
-                List<string> nomes = maquinas.ToList().Select(m => m.Nome).ToList();
-                if(nomes.Contains(request.Nome))
-                {
-                    TempData["MensagemErro"] = "Já existe uma máquina com este nome!";
-                    return View();
-                }
-
                 await _maquinaApi.CriarMaquina(request);
                 TempData["MensagemSucesso"] = "Máquina cadastrada com sucesso";
                 return RedirectToAction("Index");
@@ -43,7 +35,7 @@ namespace Producao_MVC.Controllers
             catch (Exception erro)
             {
                 TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua máquina. Erro:  {erro.Message}";
-                return View();
+                return View("Criar");
             }
         }
 
@@ -64,15 +56,23 @@ namespace Producao_MVC.Controllers
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos atualizar a máquina, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("Index");
+                TempData["MensagemErro"] = $"Não conseguimos atualizar a máquina. Erro: {erro.Message}";
+                return View();
             }
         }
 
         public async Task<IActionResult> Inativar(int id)
         {
-            var maquina = await _maquinaApi.BuscarMaquinaPorID(id);
-            return View(maquina);
+            try
+            {
+                var maquina = await _maquinaApi.BuscarMaquinaPorID(id);
+                return View(maquina);
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Não conseguimos atualizar a máquina. Erro: {erro.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         public async Task<IActionResult> InativarMaquina(int id)

@@ -34,8 +34,8 @@ namespace Producao_MVC.Controllers
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua matéria-prima, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("Index");
+                TempData["MensagemErro"] = $"Não conseguimos cadastrar a sua matéria-prima. Erro: {erro.Message}";
+                return View("Criar");
             }
         }
 
@@ -56,15 +56,23 @@ namespace Producao_MVC.Controllers
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos atualizar a matéria-prima, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("Index");
+                TempData["MensagemErro"] = $"Não conseguimos atualizar a matéria-prima. Erro: {erro.Message}";
+                return View();
             }
         }
 
         public async Task<IActionResult> Inativar(int id)
         {
-            var materiaPrima = await _materiaPrimaAPI.BuscarMateriaPrimaPorID(id);
-            return View(materiaPrima);
+            try
+            {
+                var materiaPrima = await _materiaPrimaAPI.BuscarMateriaPrimaPorID(id);
+                return View(materiaPrima);
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Não conseguimos atualizar a matéria-prima. Erro: {erro.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         public async Task<IActionResult> InativarMateriaPrima(int id)

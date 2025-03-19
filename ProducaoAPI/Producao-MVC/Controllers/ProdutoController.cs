@@ -34,8 +34,8 @@ namespace Producao_MVC.Controllers
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos cadastrar o seu produto, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("Index");
+                TempData["MensagemErro"] = $"Não conseguimos cadastrar o seu produto. Erro: {erro.Message}";
+                return View("Criar");
             }
         }
 
@@ -56,15 +56,23 @@ namespace Producao_MVC.Controllers
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos atualizar o produto, tente novamente, detalhe do erro: {erro.Message}";
-                return RedirectToAction("Index");
+                TempData["MensagemErro"] = $"Não conseguimos atualizar o produto. Erro: {erro.Message}";
+                return View();
             }
         }
 
         public async Task<IActionResult> Inativar(int id)
         {
-            var produto = await _produtoAPI.BuscarProdutoPorID(id);
-            return View(produto);
+            try
+            {
+                var produto = await _produtoAPI.BuscarProdutoPorID(id);
+                return View(produto);
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Não conseguimos atualizar o produto. Erro: {erro.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         public async Task<IActionResult> InativarProduto(int id)
