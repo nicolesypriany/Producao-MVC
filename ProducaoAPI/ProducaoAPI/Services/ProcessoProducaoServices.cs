@@ -34,8 +34,17 @@ namespace ProducaoAPI.Services
         public ProcessoProducaoResponse EntityToResponse(ProcessoProducao producao)
         {
             var prod = _producaoMateriaPrimaService.EntityListToResponseList(producao.ProducaoMateriasPrimas);
-            return new ProcessoProducaoResponse(producao.Id, producao.Data, producao.MaquinaId, producao.FormaId, producao.Ciclos, prod, producao.QuantidadeProduzida, producao.CustoUnitario, producao.CustoTotal, producao.Ativo);
-
+            return new ProcessoProducaoResponse(
+                producao.Id, 
+                producao.Data, 
+                producao.MaquinaId, 
+                producao.FormaId, 
+                producao.Ciclos, prod, 
+                producao.QuantidadeProduzida, 
+                producao.CustoUnitario, 
+                producao.CustoTotal, 
+                producao.Ativo
+            );
         }
 
         public ICollection<ProcessoProducaoResponse> EntityListToResponseList(IEnumerable<ProcessoProducao> producoes)
@@ -59,9 +68,7 @@ namespace ProducaoAPI.Services
         public async Task CalcularProducao(int producaoId)
         {
             var producao = await _producaoRepository.BuscarProducaoPorIdAsync(producaoId);
-
             var forma = await _formaRepository.BuscarFormaPorIdAsync(producao.FormaId);
-
             var produto = await _produtoRepository.BuscarProdutoPorIdAsync(producao.ProdutoId);
 
             double quantidadeProduzida = ((Convert.ToDouble(producao.Ciclos)) * forma.PecasPorCiclo) / produto.PecasPorUnidade;
@@ -86,7 +93,6 @@ namespace ProducaoAPI.Services
 
         public async Task<ProcessoProducao> AdicionarAsync(ProcessoProducaoRequest request)
         {
-
             await ValidarRequest(request);
             var forma = await _formaRepository.BuscarFormaPorIdAsync(request.FormaId);
             var producao = new ProcessoProducao(request.Data, request.MaquinaId, request.FormaId, forma.ProdutoId, request.Ciclos);
