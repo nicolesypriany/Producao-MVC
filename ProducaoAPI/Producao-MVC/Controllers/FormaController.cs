@@ -21,13 +21,29 @@ namespace Producao_MVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var formas = await _formaApi.ListarFormas();
-            return View(formas);
+            try
+            {
+                var formas = await _formaApi.ListarFormas();
+                return View(formas);
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Erro ao listar as formas. Erro: {erro.Message}";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public async Task<IActionResult> Criar()
         {
-            return View(await RetornarViewModel(false));
+            try
+            {
+                return View(await RetornarViewModel(false));
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Algo deu errado. Erro: {erro.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -49,7 +65,15 @@ namespace Producao_MVC.Controllers
 
         public async Task<IActionResult> Editar(int id)
         {
-            return View(await RetornarViewModel(true, id));
+            try
+            {
+                return View(await RetornarViewModel(true, id));
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Algo deu errado. Erro: {erro.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -88,16 +112,24 @@ namespace Producao_MVC.Controllers
             }
             catch (Exception erro)
             {
-                TempData["MensagemErro"] = $"Não conseguimos atualizar a forma. Erro: {erro.Message}";
+                TempData["MensagemErro"] = $"Algo deu errado. Erro: {erro.Message}";
                 return RedirectToAction("Index");
             }
         }
 
         public async Task<IActionResult> InativarForma(int id)
         {
-            await _formaApi.InativarForma(id);
-            TempData["MensagemSucesso"] = "Forma inativada com sucesso";
-            return RedirectToAction("Index");
+            try
+            {
+                await _formaApi.InativarForma(id);
+                TempData["MensagemSucesso"] = "Forma inativada com sucesso";
+                return RedirectToAction("Index");
+            }
+            catch (Exception erro)
+            {
+                TempData["MensagemErro"] = $"Não conseguimos atualizar a forma. Erro: {erro.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         private async Task<FormaRequest> CriarFormaPorModelo(FormaProdutoViewModel formaViewModel)

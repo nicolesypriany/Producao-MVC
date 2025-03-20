@@ -10,6 +10,7 @@ builder.Services.AddTransient<MaquinaAPI>();
 builder.Services.AddTransient<ProdutoAPI>();
 builder.Services.AddTransient<MateriaPrimaAPI>();
 builder.Services.AddTransient<ProcessoProducaoAPI>();
+builder.Services.AddTransient<AuthAPI>();
 
 builder.Services.AddHttpClient("API", client =>
 {
@@ -35,6 +36,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();

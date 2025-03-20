@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Exceptions\HttpStatusCodeException.cs" />
     <Compile Remove="WeatherForecast.cs" />
   </ItemGroup>
 

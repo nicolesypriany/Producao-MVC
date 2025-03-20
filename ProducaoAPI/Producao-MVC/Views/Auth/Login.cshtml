@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Identity.Data
+@model LoginRequest
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="text-center">
+
+    <h1 class="display-4">Login</h1>
+
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["MensagemErro"]
+        </div>
+    }
+
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["MensagemSucesso"]
+        </div>
+    }
+</div>
+
+<form asp-controller="Auth" asp-action="Login" method="post">
+    <div>
+        <label for="email">Email:</label>
+        <input type="text" asp-for="Email" class="form-control" placeholder="Digite o seu e-mail">
+    </div>
+    <div>
+        <label for="password">Senha:</label>
+        <input type="password" asp-for="Password" class="form-control" placeholder="Digite a sua senha">
+    </div>
+    <br/>
+    <div>
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+    </div>
+</form>

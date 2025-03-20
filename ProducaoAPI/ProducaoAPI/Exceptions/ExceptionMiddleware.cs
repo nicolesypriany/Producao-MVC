@@ -26,29 +26,14 @@ namespace ProducaoAPI.Exceptions
             {
                 await HandleBadRequestExceptionAsync(httpContext, ex);
             }
-            catch (HttpStatusCodeException ex)
+            catch (UnauthorizedAccessException ex)
             {
-                await HandleHttpStatusCodeExceptionAsync(httpContext, ex);
+                await HandleUnauthorizedAccessExceptionAsync(httpContext, ex);
             }
             catch (Exception ex)
             {
                 await HandleGenericExceptionAsync(httpContext, ex);
             }
-        }
-
-        private static Task HandleHttpStatusCodeExceptionAsync(HttpContext context, HttpStatusCodeException exception)
-        {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = exception.StatusCode;
-
-            var response = new
-            {
-                context.Response.StatusCode,
-                exception.Message
-            };
-
-            var jsonResponse = JsonSerializer.Serialize(response);
-            return context.Response.WriteAsync(jsonResponse);
         }
 
         private static Task HandleBadRequestExceptionAsync(HttpContext context, BadRequestException exception)
@@ -75,6 +60,21 @@ namespace ProducaoAPI.Exceptions
             {
                 context.Response.StatusCode,
                 exception.Message
+            };
+
+            var jsonResponse = JsonSerializer.Serialize(response);
+            return context.Response.WriteAsync(jsonResponse);
+        }
+
+        private static Task HandleUnauthorizedAccessExceptionAsync(HttpContext context, UnauthorizedAccessException exception)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = 401;
+
+            var response = new
+            {
+                context.Response.StatusCode,
+                message = "Acesso não autorizado"
             };
 
             var jsonResponse = JsonSerializer.Serialize(response);

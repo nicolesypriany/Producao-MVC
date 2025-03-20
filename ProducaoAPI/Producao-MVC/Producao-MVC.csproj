@@ -9,11 +9,21 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Privacy.cshtml" />
+    <Content Remove="Views\Login.cshtml" />
     <Content Remove="wwwroot\js\toggleMenu.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Login.cshtml" />
     <_ContentIncludedByDefault Remove="wwwroot\js\toggleMenu.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Login.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Auth\Login.cshtml" />
   </ItemGroup>
 
 </Project>
