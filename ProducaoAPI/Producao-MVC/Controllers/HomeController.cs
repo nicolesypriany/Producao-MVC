@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Producao_MVC.Models;
 using System.Diagnostics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Producao_MVC.Controllers
 {
@@ -18,9 +19,12 @@ namespace Producao_MVC.Controllers
             return View();
         }
 
-        public IActionResult Error()
+        public IActionResult Error(Exception exception)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel
+            {
+                Message = exception.InnerException.Message
+            });
         }
     }
 }

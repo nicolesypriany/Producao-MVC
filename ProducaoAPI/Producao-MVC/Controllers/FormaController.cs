@@ -21,16 +21,8 @@ namespace Producao_MVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                var formas = await _formaApi.ListarFormas();
-                return View(formas);
-            }
-            catch (Exception erro)
-            {
-                TempData["MensagemErro"] = $"Erro ao listar as formas. Erro: {erro.Message}";
-                return RedirectToAction("Index", "Home");
-            }
+            var formas = await _formaApi.ListarFormas();
+            return View(formas);
         }
 
         public async Task<IActionResult> Criar()

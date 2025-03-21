@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProducaoAPI.Requests;
 using ProducaoAPI.Responses;
@@ -7,7 +8,7 @@ namespace ProducaoAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class MaquinaController : Controller
     {
         private readonly IMaquinaService _maquinaService;

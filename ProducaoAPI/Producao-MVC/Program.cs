@@ -1,23 +1,29 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using Producao_MVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthAPI>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddTransient<FormaAPI>();
-builder.Services.AddTransient<MaquinaAPI>();
-builder.Services.AddTransient<ProdutoAPI>();
-builder.Services.AddTransient<MateriaPrimaAPI>();
-builder.Services.AddTransient<ProcessoProducaoAPI>();
-builder.Services.AddTransient<AuthAPI>();
+builder.Services.AddScoped<CookieHandler>();
+builder.Services.AddScoped<FormaAPI>();
+builder.Services.AddScoped<MaquinaAPI>();
+builder.Services.AddScoped<ProdutoAPI>();
+builder.Services.AddScoped<MateriaPrimaAPI>();
+builder.Services.AddScoped<ProcessoProducaoAPI>();
+builder.Services.AddScoped<AuthAPI>();
 
 builder.Services.AddHttpClient("API", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["APIServer:Url"]!);
     client.DefaultRequestHeaders.Add("Accept", "application/json");
-});
+}).AddHttpMessageHandler<CookieHandler>();
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -31,8 +37,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

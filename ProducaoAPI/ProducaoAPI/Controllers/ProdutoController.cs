@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ProducaoAPI.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProducaoAPI.Requests;
 using ProducaoAPI.Responses;
 using ProducaoAPI.Services.Interfaces;
@@ -8,7 +8,7 @@ namespace ProducaoAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ProdutoController : Controller
     {
         private readonly IProdutoService _produtoServices;
@@ -66,7 +66,7 @@ namespace ProducaoAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ProdutoResponse>> AtualizarProduto(int id, ProdutoRequest request)
         {
-           var produto = await _produtoServices.AtualizarAsync(id, request);
+            var produto = await _produtoServices.AtualizarAsync(id, request);
             return Ok(_produtoServices.EntityToResponse(produto));
         }
 

@@ -1,7 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Net;
 using System.Text;
-using System.Net;
-using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Producao_MVC.Services
 {
@@ -9,7 +8,7 @@ namespace Producao_MVC.Services
     {
         public static async Task Validate(HttpResponseMessage response)
         {
-            if(response.StatusCode == HttpStatusCode.Unauthorized)
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new Exception("Usuário não autorizado");
             }
