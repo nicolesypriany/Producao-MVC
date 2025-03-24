@@ -1,40 +1,41 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Producao_MVC</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Producao_MVC.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="sidenav">
-        <a style="font-size:25px">Produção-MVC</a>
-        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-        <a asp-area="" asp-controller="Maquina" asp-action="Index">Máquina</a>
-        <a asp-area="" asp-controller="Forma" asp-action="Index">Forma</a>
-        <a asp-area="" asp-controller="Produto" asp-action="Index">Produto</a>
-        <a asp-area="" asp-controller="MateriaPrima" asp-action="Index">Matéria-prima</a>
-        <a asp-area="" asp-controller="ProcessoProducao" asp-action="Index">Produção</a>
-    </div>
-    <main role="main" class="pb-3">
-        <div class="content">
-            @RenderBody()
+﻿    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - Producao_MVC</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/Producao_MVC.styles.css" asp-append-version="true" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="sidenav">
+            <a style="font-size:25px">Produção-MVC</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-area="" asp-controller="Maquina" asp-action="Index">Máquina</a>
+            <a asp-area="" asp-controller="Forma" asp-action="Index">Forma</a>
+            <a asp-area="" asp-controller="Produto" asp-action="Index">Produto</a>
+            <a asp-area="" asp-controller="MateriaPrima" asp-action="Index">Matéria-prima</a>
+            <a asp-area="" asp-controller="ProcessoProducao" asp-action="Index">Produção</a>
+            <a asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
         </div>
-    </main>
+        <main role="main" class="pb-3">
+            <div class="content">
+                @RenderBody()
+            </div>
+        </main>
 
-    <footer id="footer" class="border-top text-muted">
-        <div class="container">
-            &copy; 2025 - Producao_MVC
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+        <footer id="footer" class="border-top text-muted">
+            <div class="container">
+                &copy; 2025 - Producao_MVC
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
 </html>

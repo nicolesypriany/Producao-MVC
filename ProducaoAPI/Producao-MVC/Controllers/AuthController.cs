@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Producao_MVC.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Producao_MVC.Controllers
 {
@@ -25,7 +24,7 @@ namespace Producao_MVC.Controllers
             try
             {
                 var response = await _authApi.Login(request.Email, request.Password);
-                if(response.Sucesso == true)
+                if (response.Sucesso == true)
                 {
                     TempData["MensagemSucesso"] = "Login efetuado com sucesso";
                     return RedirectToAction("Index", "Home");
@@ -41,6 +40,12 @@ namespace Producao_MVC.Controllers
                 TempData["MensagemErro"] = $"Erro ao efetuar o login. Erro: {erro.Message}";
                 return View();
             }
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _authApi.Logout();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

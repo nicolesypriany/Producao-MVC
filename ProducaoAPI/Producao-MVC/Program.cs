@@ -14,7 +14,7 @@ builder.Services.AddScoped<MaquinaAPI>();
 builder.Services.AddScoped<ProdutoAPI>();
 builder.Services.AddScoped<MateriaPrimaAPI>();
 builder.Services.AddScoped<ProcessoProducaoAPI>();
-builder.Services.AddScoped<AuthAPI>();
+builder.Services.AddScoped<AuthAPI>(sp => (AuthAPI) sp.GetRequiredService<AuthenticationStateProvider>());
 
 builder.Services.AddHttpClient("API", client =>
 {

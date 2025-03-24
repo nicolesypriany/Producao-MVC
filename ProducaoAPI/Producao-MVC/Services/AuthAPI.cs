@@ -6,6 +6,7 @@ namespace Producao_MVC.Services
 {
     public class AuthAPI : AuthenticationStateProvider
     {
+        private bool autenticado = false;
         private readonly HttpClient _httpClient;
 
         public AuthAPI(IHttpClientFactory factory)
@@ -15,6 +16,7 @@ namespace Producao_MVC.Services
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
+            autenticado = false;
             var pessoa = new ClaimsPrincipal();
             var response = await _httpClient.GetAsync("auth/manage/info");
 
@@ -29,6 +31,7 @@ namespace Producao_MVC.Services
 
                 var identity = new ClaimsIdentity(dados, "Cookies");
                 pessoa = new ClaimsPrincipal(identity);
+                autenticado = true;
             }
 
             return new AuthenticationState(pessoa);
@@ -50,6 +53,18 @@ namespace Producao_MVC.Services
                 return new AuthReponse { Sucesso = true };
             }
             return new AuthReponse { Sucesso = false };
+        }
+
+        public async Task Logout()
+        {
+            await _httpClient.PostAsync("auth/logout", null);
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
+
+        public async Task<bool> VerificarAutenticado()
+        {
+            await GetAuthenticationStateAsync();
+            return autenticado;
         }
     }
 }
