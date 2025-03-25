@@ -21,6 +21,7 @@ namespace ProducaoAPI.Controllers
         /// Obter matérias-primas
         /// </summary>
         ///<response code="200">Sucesso</response>
+        ///<response code="401">Usuário não autorizado</response>
         ///<response code="404">Nenhuma matéria-prima encontrada</response>
         ///<response code="500">Erro de servidor</response>
         [HttpGet]
@@ -34,6 +35,7 @@ namespace ProducaoAPI.Controllers
         /// Obter matéria-prima por ID
         /// </summary>
         ///<response code="200">Sucesso</response>
+        ///<response code="401">Usuário não autorizado</response>
         ///<response code="404">Nenhuma matéria-prima encontrada</response>
         ///<response code="500">Erro de servidor</response>
         [HttpGet("{id}")]
@@ -48,6 +50,7 @@ namespace ProducaoAPI.Controllers
         /// </summary>
         ///<response code="200">Sucesso</response>
         ///<response code="400">Dados inválidos</response>
+        ///<response code="401">Usuário não autorizado</response>
         ///<response code="500">Erro de servidor</response>
         [HttpPost]
         public async Task<ActionResult<MateriaPrimaResponse>> CadastrarMateriaPrima(MateriaPrimaRequest request)
@@ -61,6 +64,7 @@ namespace ProducaoAPI.Controllers
         /// </summary>
         ///<response code="200">Sucesso</response>
         ///<response code="400">Dados inválidos</response>
+        ///<response code="401">Usuário não autorizado</response>
         ///<response code="404">Nenhuma matéria-prima encontrada</response>
         ///<response code="500">Erro de servidor</response>
         [HttpPut("{id}")]
@@ -74,6 +78,7 @@ namespace ProducaoAPI.Controllers
         /// Inativar uma matéria-prima
         /// </summary>
         ///<response code="200">Sucesso</response>
+        ///<response code="401">Usuário não autorizado</response>
         ///<response code="404">Nenhuma matéria-prima encontrada</response>
         ///<response code="500">Erro de servidor</response>
         [HttpDelete("{id}")]
