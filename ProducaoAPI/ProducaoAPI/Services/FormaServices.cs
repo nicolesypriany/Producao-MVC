@@ -24,7 +24,15 @@ namespace ProducaoAPI.Services
         {
             var produto = _produtoService.EntityToResponse(forma.Produto);
             var maquinas = _maquinaService.EntityListToResponseList(forma.Maquinas);
-            return new FormaResponse(forma.Id, forma.Nome, produto, forma.PecasPorCiclo, maquinas, forma.Ativo);
+
+            return new FormaResponse(
+                forma.Id,
+                forma.Nome,
+                produto,
+                forma.PecasPorCiclo,
+                maquinas,
+                forma.Ativo
+            );
         }
 
         public ICollection<FormaResponse> EntityListToResponseList(IEnumerable<Forma> forma)
@@ -34,13 +42,12 @@ namespace ProducaoAPI.Services
 
         public async Task<List<Maquina>> FormaMaquinaRequestToEntity(ICollection<FormaMaquinaRequest> maquinas)
         {
-            var maquinasSelecionadas = new List<Maquina>();
+            List<Maquina> maquinasSelecionadas = [];
 
             foreach (var maquina in maquinas)
             {
-                var maquinaSelecionada = _maquinaService.BuscarMaquinaPorIdAsync(maquina.Id);
-                var maq = await maquinaSelecionada;
-                maquinasSelecionadas.Add(maq);
+                var maquinaSelecionada = await _maquinaService.BuscarMaquinaPorIdAsync(maquina.Id);
+                maquinasSelecionadas.Add(maquinaSelecionada);
             }
 
             return maquinasSelecionadas;

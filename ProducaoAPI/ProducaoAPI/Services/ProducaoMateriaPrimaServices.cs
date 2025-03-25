@@ -19,7 +19,11 @@ namespace ProducaoAPI.Services
 
         public ProducaoMateriaPrimaResponse EntityToResponse(ProcessoProducaoMateriaPrima producaoMateriaPrima)
         {
-            return new ProducaoMateriaPrimaResponse(producaoMateriaPrima.MateriaPrimaId, producaoMateriaPrima.MateriaPrima.Nome, producaoMateriaPrima.Quantidade);
+            return new ProducaoMateriaPrimaResponse(
+                producaoMateriaPrima.MateriaPrimaId, 
+                producaoMateriaPrima.MateriaPrima.Nome, 
+                producaoMateriaPrima.Quantidade
+            );
         }
 
         public ICollection<ProducaoMateriaPrimaResponse> EntityListToResponseList(ICollection<ProcessoProducaoMateriaPrima> producoesMateriasPrimas)
@@ -30,10 +34,18 @@ namespace ProducaoAPI.Services
         public void VerificarProducoesMateriasPrimasExistentes(int producaoId, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
         {
             var listaIdMateriasAtuais = new List<int>();
-            foreach (var producaoMateriaPrima in _context.ProducoesMateriasPrimas.Where(p => p.ProducaoId == producaoId)) listaIdMateriasAtuais.Add(producaoMateriaPrima.MateriaPrimaId);
+
+            foreach (var producaoMateriaPrima in _context.ProducoesMateriasPrimas.Where(p => p.ProducaoId == producaoId))
+            {
+                listaIdMateriasAtuais.Add(producaoMateriaPrima.MateriaPrimaId);
+            }
 
             var listaIdNovasMaterias = new List<int>();
-            foreach(var producaoMateriaPrimaRequest in materiasPrimasRequest) listaIdNovasMaterias.Add(producaoMateriaPrimaRequest.Id);
+
+            foreach(var producaoMateriaPrimaRequest in materiasPrimasRequest)
+            {
+                listaIdNovasMaterias.Add(producaoMateriaPrimaRequest.Id);
+            }
 
             CriarOuAtualizarProducaoMateriaPrima(producaoId, listaIdNovasMaterias, listaIdMateriasAtuais, materiasPrimasRequest);
 

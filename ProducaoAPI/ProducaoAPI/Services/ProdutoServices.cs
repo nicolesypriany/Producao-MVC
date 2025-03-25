@@ -17,7 +17,14 @@ namespace ProducaoAPI.Services
 
         public ProdutoResponse EntityToResponse(Produto produto)
         {
-            return new ProdutoResponse(produto.Id, produto.Nome, produto.Medidas, produto.Unidade, produto.PecasPorUnidade, produto.Ativo);
+            return new ProdutoResponse(
+                produto.Id, 
+                produto.Nome, 
+                produto.Medidas, 
+                produto.Unidade, 
+                produto.PecasPorUnidade, 
+                produto.Ativo
+            );
         }
 
         public ICollection<ProdutoResponse> EntityListToResponseList(IEnumerable<Produto> produto)
@@ -34,7 +41,14 @@ namespace ProducaoAPI.Services
         public async Task<Produto> AdicionarAsync(ProdutoRequest request)
         {
             await ValidarRequest(true, request);
-            var produto = new Produto(request.Nome, request.Medidas, request.Unidade, request.PecasPorUnidade);
+
+            var produto = new Produto(
+                request.Nome, 
+                request.Medidas, 
+                request.Unidade, 
+                request.PecasPorUnidade
+            );
+
             await _produtoRepository.AdicionarAsync(produto);
             return produto;
         }

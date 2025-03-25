@@ -33,16 +33,18 @@ namespace ProducaoAPI.Services
 
         public ProcessoProducaoResponse EntityToResponse(ProcessoProducao producao)
         {
-            var prod = _producaoMateriaPrimaService.EntityListToResponseList(producao.ProducaoMateriasPrimas);
+            var producoesMateriasPrimas = _producaoMateriaPrimaService.EntityListToResponseList(producao.ProducaoMateriasPrimas);
+
             return new ProcessoProducaoResponse(
-                producao.Id, 
-                producao.Data, 
-                producao.MaquinaId, 
-                producao.FormaId, 
-                producao.Ciclos, prod, 
-                producao.QuantidadeProduzida, 
-                producao.CustoUnitario, 
-                producao.CustoTotal, 
+                producao.Id,
+                producao.Data,
+                producao.MaquinaId,
+                producao.FormaId,
+                producao.Ciclos,
+                producoesMateriasPrimas,
+                producao.QuantidadeProduzida,
+                producao.CustoUnitario,
+                producao.CustoTotal,
                 producao.Ativo
             );
         }
@@ -54,13 +56,17 @@ namespace ProducaoAPI.Services
 
         public async Task<List<ProcessoProducaoMateriaPrima>> CriarProducoesMateriasPrimas(ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimas, int ProducaoId)
         {
-            var producoesMateriasPrimas = new List<ProcessoProducaoMateriaPrima>();
+            List<ProcessoProducaoMateriaPrima> producoesMateriasPrimas = [];
 
             foreach (var materiaPrima in materiasPrimas)
             {
                 var materiaPrimaSelecionada = await _materiaPrimaRepository.BuscarMateriaPrimaPorIdAsync(materiaPrima.Id);
-                var producaoMateriaPrima = new ProcessoProducaoMateriaPrima(ProducaoId, materiaPrimaSelecionada.Id, materiaPrima.Quantidade);
-                producoesMateriasPrimas.Add(producaoMateriaPrima);
+
+                producoesMateriasPrimas.Add(new ProcessoProducaoMateriaPrima(
+                    ProducaoId, 
+                    materiaPrimaSelecionada.Id, 
+                    materiaPrima.Quantidade
+                ));
             }
             return producoesMateriasPrimas;
         }
@@ -95,7 +101,15 @@ namespace ProducaoAPI.Services
         {
             await ValidarRequest(request);
             var forma = await _formaRepository.BuscarFormaPorIdAsync(request.FormaId);
-            var producao = new ProcessoProducao(request.Data, request.MaquinaId, request.FormaId, forma.ProdutoId, request.Ciclos);
+
+            var producao = new ProcessoProducao(
+                request.Data, 
+                request.MaquinaId, 
+                request.FormaId, 
+                forma.ProdutoId, 
+                request.Ciclos
+            );
+
             await _producaoRepository.AdicionarAsync(producao);
 
             var producaoMateriasPrimas = await CriarProducoesMateriasPrimas(request.MateriasPrimas, producao.Id);
@@ -145,7 +159,14 @@ namespace ProducaoAPI.Services
 
             foreach (var producao in producoes)
             {
-                textos += ("ID: " + producao.Id + " Data: " + producao.Data + " Maquina: " + producao.Maquina.Nome + " Forma: " + producao.Forma.Nome + " Produto: " + producao.Produto.Nome + " Quantidade Produzida: " + producao.QuantidadeProduzida + " " + producao.Produto.Unidade + "\n").ToString();
+                textos += ("ID: " + producao.Id + 
+                    " Data: " + producao.Data + 
+                    " Maquina: " + producao.Maquina.Nome + 
+                    " Forma: " + producao.Forma.Nome + 
+                    " Produto: " + producao.Produto.Nome + 
+                    " Quantidade Produzida: " + producao.QuantidadeProduzida + 
+                    " " + producao.Produto.Unidade + "\n")
+                    .ToString();
             }
 
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(textos));

@@ -14,10 +14,12 @@ namespace ProducaoAPI.Services
         {
             _maquinaRepository = maquinaRepository;
         }
+
         public MaquinaResponse EntityToResponse(Maquina maquina)
         {
             return new MaquinaResponse(maquina.Id, maquina.Nome, maquina.Marca, maquina.Ativo);
         }
+
         public ICollection<MaquinaResponse> EntityListToResponseList(IEnumerable<Maquina> maquinas)
         {
             return maquinas.Select(m => EntityToResponse(m)).ToList();

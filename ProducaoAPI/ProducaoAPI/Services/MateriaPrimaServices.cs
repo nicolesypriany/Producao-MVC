@@ -19,7 +19,14 @@ namespace ProducaoAPI.Services
 
         public MateriaPrimaResponse EntityToResponse(MateriaPrima materiaPrima)
         {
-            return new MateriaPrimaResponse(materiaPrima.Id, materiaPrima.Nome, materiaPrima.Fornecedor, materiaPrima.Unidade, materiaPrima.Preco, materiaPrima.Ativo);
+            return new MateriaPrimaResponse(
+                materiaPrima.Id,
+                materiaPrima.Nome,
+                materiaPrima.Fornecedor,
+                materiaPrima.Unidade,
+                materiaPrima.Preco,
+                materiaPrima.Ativo
+            );
         }
 
         public ICollection<MateriaPrimaResponse> EntityListToResponseList(IEnumerable<MateriaPrima> materiaPrima)
@@ -51,9 +58,9 @@ namespace ProducaoAPI.Services
             double preco = Convert.ToDouble(precoNode.InnerText.Replace(".", ","));
             if (unidade == "KG") preco /= 1000;
 
-            MateriaPrimaRequest request = new MateriaPrimaRequest(produto, fornecedor, unidade, preco);
+            var request = new MateriaPrimaRequest(produto, fornecedor, unidade, preco);
             await ValidarRequest(true, request);
-            MateriaPrima materiaPrima = new MateriaPrima(request.Nome, request.Fornecedor, request.Unidade, request.Preco);
+            var materiaPrima = new MateriaPrima(request.Nome, request.Fornecedor, request.Unidade, request.Preco);
             await _materiaPrimaRepository.AdicionarAsync(materiaPrima);
 
             return materiaPrima;
@@ -61,7 +68,7 @@ namespace ProducaoAPI.Services
 
         public XmlDocument ConverterIFormFileParaXmlDocument(IFormFile arquivoXML)
         {
-            XmlDocument doc = new XmlDocument();
+            XmlDocument doc = new();
             using (var stream = new MemoryStream())
             {
                 arquivoXML.CopyTo(stream);
