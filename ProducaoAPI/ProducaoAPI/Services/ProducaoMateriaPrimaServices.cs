@@ -1,5 +1,4 @@
-﻿using ProducaoAPI.Data;
-using ProducaoAPI.Models;
+﻿using ProducaoAPI.Models;
 using ProducaoAPI.Repositories.Interfaces;
 using ProducaoAPI.Requests;
 using ProducaoAPI.Responses;
@@ -10,18 +9,16 @@ namespace ProducaoAPI.Services
     public class ProducaoMateriaPrimaServices : IProducaoMateriaPrimaService
     {
         private readonly IProducaoMateriaPrimaRepository _producaoMateriaPrimaRepository;
-        private readonly ProducaoContext _context;
-        public ProducaoMateriaPrimaServices(IProducaoMateriaPrimaRepository producaoMateriaPrimaRepository, ProducaoContext context)
+        public ProducaoMateriaPrimaServices(IProducaoMateriaPrimaRepository producaoMateriaPrimaRepository)
         {
             _producaoMateriaPrimaRepository = producaoMateriaPrimaRepository;
-            _context = context;
         }
 
         public ProducaoMateriaPrimaResponse EntityToResponse(ProcessoProducaoMateriaPrima producaoMateriaPrima)
         {
             return new ProducaoMateriaPrimaResponse(
-                producaoMateriaPrima.MateriaPrimaId, 
-                producaoMateriaPrima.MateriaPrima.Nome, 
+                producaoMateriaPrima.MateriaPrimaId,
+                producaoMateriaPrima.MateriaPrima.Nome,
                 producaoMateriaPrima.Quantidade
             );
         }
@@ -31,83 +28,80 @@ namespace ProducaoAPI.Services
             return producoesMateriasPrimas.Select(m => EntityToResponse(m)).ToList();
         }
 
-        public void VerificarProducoesMateriasPrimasExistentes(int producaoId, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
+        public async Task VerificarProducoesMateriasPrimasExistentes(int producaoId, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
         {
-            var listaIdMateriasAtuais = new List<int>();
+            var producoesMateriasPrimas = await _producaoMateriaPrimaRepository.ListarProducoesMateriasPrimas();
 
-            foreach (var producaoMateriaPrima in _context.ProducoesMateriasPrimas.Where(p => p.ProducaoId == producaoId))
-            {
-                listaIdMateriasAtuais.Add(producaoMateriaPrima.MateriaPrimaId);
-            }
+            List<int> idMateriasPrimasAtuais = producoesMateriasPrimas
+                .Where(p => p.ProducaoId == producaoId)
+                .Select(p => p.MateriaPrimaId)
+                .ToList();
 
-            var listaIdNovasMaterias = new List<int>();
+            List<int> idMateriasPrimasNovas = materiasPrimasRequest
+                .Select(m => m.Id)
+                .ToList();
 
-            foreach(var producaoMateriaPrimaRequest in materiasPrimasRequest)
-            {
-                listaIdNovasMaterias.Add(producaoMateriaPrimaRequest.Id);
-            }
-
-            CriarOuAtualizarProducaoMateriaPrima(producaoId, listaIdNovasMaterias, listaIdMateriasAtuais, materiasPrimasRequest);
-
-            ExcluirProducaoMateriaPrima(producaoId, listaIdNovasMaterias, listaIdMateriasAtuais);
-
+            await CriarOuAtualizarProducaoMateriaPrima(producaoId, idMateriasPrimasNovas, idMateriasPrimasAtuais, materiasPrimasRequest);
+            await ExcluirProducaoMateriaPrima(producaoId, idMateriasPrimasNovas, idMateriasPrimasAtuais);
         }
 
-        public void CriarOuAtualizarProducaoMateriaPrima(int producaoId, List<int> listaIdNovasMaterias, List<int> listaIdMateriasAtuais, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
+        private async Task CriarOuAtualizarProducaoMateriaPrima(int producaoId, List<int> idMateriasPrimasNovas, List<int> idMateriasPrimasAtuais, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
         {
-            foreach (var materiaPrimaId in listaIdNovasMaterias)
+            foreach (var materiaPrimaId in idMateriasPrimasNovas)
             {
-                if (listaIdMateriasAtuais.Contains(materiaPrimaId))
+                if (idMateriasPrimasAtuais.Contains(materiaPrimaId))
                 {
-                    CompararQuantidadesMateriasPrimas(producaoId, materiaPrimaId, materiasPrimasRequest);
+                    await CompararQuantidadesMateriasPrimas(producaoId, materiaPrimaId, materiasPrimasRequest);
                 }
-                else
-                {
-                    var quantidade = RetornarQuantidadeMateriaPrima(materiaPrimaId, materiasPrimasRequest);
-                    var novoProcesso = new ProcessoProducaoMateriaPrima(producaoId, materiaPrimaId, quantidade);
-                    _context.ProducoesMateriasPrimas.Add(novoProcesso);
-                    _context.SaveChanges();
-                }
+                //else
+                //{
+
+                //    var quantidade = await RetornarQuantidadeMateriaPrima(materiaPrimaId, materiasPrimasRequest);
+                //    var novoProcesso = new ProcessoProducaoMateriaPrima(producaoId, materiaPrimaId, quantidade);
+                //    await _producaoMateriaPrimaRepository.AdicionarAsync(novoProcesso);
+                //}
+
+                var quantidade = materiasPrimasRequest.Where(m => m.Id == materiaPrimaId).Select(m => m.Quantidade).First();
+                var novoProcesso = new ProcessoProducaoMateriaPrima(producaoId, materiaPrimaId, quantidade);
+                await _producaoMateriaPrimaRepository.AdicionarAsync(novoProcesso);
             }
         }
 
-        public void ExcluirProducaoMateriaPrima(int producaoId, List<int> listaIdNovasMaterias, List<int> listaIdMateriasAtuais)
+        private async Task ExcluirProducaoMateriaPrima(int producaoId, List<int> listaIdNovasMaterias, List<int> listaIdMateriasAtuais)
         {
             foreach (var materiaPrimaId in listaIdMateriasAtuais)
             {
                 if (!listaIdNovasMaterias.Contains(materiaPrimaId))
                 {
-                    var producaoMateriaPrimaExistente = _context.ProducoesMateriasPrimas
-                        .Where(p => p.ProducaoId == producaoId)
-                        .Where(p => p.MateriaPrimaId == materiaPrimaId)
-                        .FirstOrDefault();
-
-                    _context.ProducoesMateriasPrimas.Remove(producaoMateriaPrimaExistente);
-                    _context.SaveChanges();
+                    var producaoMateriaPrimaExistente = await _producaoMateriaPrimaRepository.BuscarProducaoMateriaPrimaPorIdDaProducaoEIdDaMateriaPrimaAsync(producaoId, materiaPrimaId);
+                    await _producaoMateriaPrimaRepository.RemoverAsync(producaoMateriaPrimaExistente);
                 }
             }
         }
 
-        public double RetornarQuantidadeMateriaPrima(int idMateriaPrima, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
+        public async Task<double> RetornarQuantidadeMateriaPrima(int idMateriaPrima, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
         {
             double quantidade = 0;
-            foreach(var materiaPrima in materiasPrimasRequest)
+            foreach (var materiaPrima in materiasPrimasRequest)
             {
-                if (materiaPrima.Id == idMateriaPrima) quantidade = materiaPrima.Quantidade;
+                if (materiaPrima.Id == idMateriaPrima)
+                {
+                    quantidade = materiaPrima.Quantidade;
+                }
             }
             return quantidade;
         }
 
-        public void CompararQuantidadesMateriasPrimas(int producaoId, int materiaPrimaId, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
+        private async Task CompararQuantidadesMateriasPrimas(int producaoId, int materiaPrimaId, ICollection<ProcessoProducaoMateriaPrimaRequest> materiasPrimasRequest)
         {
-            var producaoMateriaPrimaExistente = _context.ProducoesMateriasPrimas
-                        .Where(p => p.ProducaoId == producaoId)
-                        .Where(p => p.MateriaPrimaId == materiaPrimaId)
-                        .FirstOrDefault();
+            var producaoMateriaPrimaExistente = await _producaoMateriaPrimaRepository.BuscarProducaoMateriaPrimaPorIdDaProducaoEIdDaMateriaPrimaAsync(producaoId, materiaPrimaId);
 
-            var quantidadeNova = RetornarQuantidadeMateriaPrima(materiaPrimaId, materiasPrimasRequest);
-            if (producaoMateriaPrimaExistente.Quantidade != quantidadeNova) producaoMateriaPrimaExistente.Quantidade = quantidadeNova;
-            _context.SaveChanges();
+            var quantidadeNova = materiasPrimasRequest.Where(m => m.Id == materiaPrimaId).Select(m => m.Quantidade).First();
+            if (producaoMateriaPrimaExistente.Quantidade != quantidadeNova)
+            {
+                producaoMateriaPrimaExistente.Quantidade = quantidadeNova;
+                await _producaoMateriaPrimaRepository.AtualizarAsync(producaoMateriaPrimaExistente);
+            }
         }
 
         public Task AdicionarAsync(ProcessoProducaoMateriaPrima producaoMateriaPrima) => _producaoMateriaPrimaRepository.AdicionarAsync(producaoMateriaPrima);

@@ -82,8 +82,8 @@ namespace ProducaoAPI.Services
             double custoTotal = 0;
             foreach (var producaoMateriaPrima in producao.ProducaoMateriasPrimas)
             {
-                var total = producaoMateriaPrima.Quantidade * producaoMateriaPrima.MateriaPrima.Preco;
-                custoTotal += total;
+                var custoMateriaPrima = producaoMateriaPrima.Quantidade * producaoMateriaPrima.MateriaPrima.Preco;
+                custoTotal += custoMateriaPrima;
             }
 
             producao.QuantidadeProduzida = quantidadeProduzida;
@@ -128,7 +128,7 @@ namespace ProducaoAPI.Services
 
             var producao = await BuscarProducaoPorIdAsync(id);
 
-            _producaoMateriaPrimaService.VerificarProducoesMateriasPrimasExistentes(id, request.MateriasPrimas);
+            await _producaoMateriaPrimaService.VerificarProducoesMateriasPrimasExistentes(id, request.MateriasPrimas);
 
             producao.Data = request.Data;
             producao.MaquinaId = request.MaquinaId;
